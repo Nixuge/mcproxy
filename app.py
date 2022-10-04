@@ -21,7 +21,9 @@ class Link:
         self.full_url = url
         if self.full_url[:8] != "https://":
             self.full_url = "https://" + self.full_url
+        print(self.full_url)
         self.cropped_url = url.replace("https://", "").replace("http://", "")
+        print(self.cropped_url)
         self.hostname = self.cropped_url.split('/')[0]
         self.domain = '.'.join(self.hostname.split('.')[-2:])
         self.data_path = "data/" + self.cropped_url
