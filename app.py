@@ -19,7 +19,7 @@ class VARS:
 class Link:
     def __init__(self, url: str, key: Optional[str]):
         self.full_url = url
-        if self.full_url[:8] != "https://":
+        if self.full_url[:8] != "https://" and self.full_url[:7] != "http://":
             self.full_url = "https://" + self.full_url
         print(self.full_url)
         self.cropped_url = url.replace("https://", "").replace("http://", "")
