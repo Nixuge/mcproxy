@@ -21,14 +21,32 @@ class Link:
         self.full_url = url
         if self.full_url[:8] != "https://":
             self.full_url = "https://" + self.full_url
-        self.cropped_url = url.replace("https://", "")
+        self.cropped_url = url.replace("https://", "").replace("http://", "")
         self.hostname = self.cropped_url.split('/')[0]
         self.domain = '.'.join(self.hostname.split('.')[-2:])
         self.data_path = "data/" + self.cropped_url
         self.data_folder = os.path.dirname(self.data_path)
         self.extension = self.cropped_url.split('.')[-1]
-        self.is_trusted_domain = self.domain in ["minecraft.net", "mojang.com", "multimc.org", "polymc.org", "maven.org"]
-        self.has_key = key == VARS.secret_key
+        self.is_trusted = self._check_trust(key)
+
+    def _check_trust(self, key: str) -> bool:
+        trusted_domains = [
+            "minecraft.net",
+            "mojang.com",
+            "multimc.org",
+            "polymc.org",
+            "maven.org",
+            "fabricmc.net",
+            "quiltmc.org",
+            "minecraftforge.net",
+            "apache.org",
+            "liteloader.com"
+        ]
+        trusted_hostnames = [
+            "polymc.github.io"
+        ]
+        
+        return self.domain in trusted_domains or self.hostname in trusted_hostnames or key == VARS.secret_key
 
     def data_exists(self) -> bool:
         return os.path.exists(self.data_path)
@@ -57,7 +75,7 @@ class Utils:
 def get_data(path: str = ""):
     link = Link(path, request.args.get('key'))
 
-    if not link.is_trusted_domain and not link.has_key:
+    if not link.is_trusted:
         return "Must be from a trusted domain !"
 
     if not link.data_exists():
