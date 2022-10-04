@@ -1,3 +1,5 @@
+#!/bin/python3
+# -*- coding: utf-8 -*-
 from typing import Optional
 from flask import Flask, send_file, request
 import os
