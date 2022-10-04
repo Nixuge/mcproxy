@@ -76,12 +76,12 @@ def get_data(path: str = ""):
     link = Link(path, request.args.get('key'))
 
     if not link.is_trusted:
-        return "Must be from a trusted domain !"
+        return "Must be from a trusted domain !", 400
 
     if not link.data_exists():
         link.download_file()
 
-    return send_file(link.data_path)
+    return send_file(link.data_path), 200
 
 
 @app.route("/")
