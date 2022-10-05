@@ -19,10 +19,16 @@ class VARS:
 class Link:
     def __init__(self, url: str, key: Optional[str]):
         self.full_url = url
-        if self.full_url[:8] != "https://" or self.full_url[:7] != "http://":
-            self.full_url = "https://" + self.full_url
+        
+        if not "https:/" in self.full_url and not "http:/" in self.full_url:
+            self.full_url = "https:/" + self.full_url
 
-        self.cropped_url = url.replace("https://", "").replace("http://", "")
+        if "https:/" in self.full_url: #flask issue
+            self.full_url = self.full_url.replace("https:/", "https://")
+        if "http:/" in self.full_url:
+            self.full_url = self.full_url.replace("http:/", "http://")
+
+        self.cropped_url = self.full_url.replace("https://", "").replace("http://", "")
 
         self.hostname = self.cropped_url.split('/')[0]
         self.domain = '.'.join(self.hostname.split('.')[-2:])
