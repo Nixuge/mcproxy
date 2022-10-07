@@ -90,7 +90,7 @@ class Utils:
     def patch_file(file_content: str, url: str):
         
         if "/net.minecraftforge/" in url:
-            Utils._patch_mutate_forge_file_polymc(file_content)
+            file_content = Utils._patch_mutate_forge_file_polymc(file_content)
 
         file_content = file_content.replace("https://", VARS.endpoint_b)
         return file_content
@@ -103,7 +103,7 @@ class Utils:
             if not entry.get("url"):
                 entry["url"] = "https://maven.minecraftforge.net/"
 
-        file_content = json.dumps(file_dict)
+        return json.dumps(file_dict)
 
 
 @app.route("/get_data/<path:path>")
