@@ -120,8 +120,7 @@ def get_data(path: str = ""):
     if not link.is_trusted:
         return "Must be from a trusted domain !", 400
 
-    if True:
-    # if not link.data_exists():
+    if not link.data_exists():
         link.download_file()
 
     return send_file(link.data_path), 200
