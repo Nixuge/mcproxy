@@ -7,11 +7,13 @@ from flask import Flask, send_file, request
 import os
 import requests
 from gevent.pywsgi import WSGIServer
+import json
+
 
 app = Flask(__name__)
 
 class VARS:
-    endpoint_b = b"https://mcdl.nixuge.me/get_data/"
+    endpoint_b = "https://mcdl.nixuge.me/get_data/"
     secret_key = "4k9Mu1AoQHGh0x"
     server_port = 64670
 
@@ -20,21 +22,24 @@ class Link:
     def __init__(self, url: str, key: Optional[str]):
         self.full_url = url
         
+        #flask issue for the lines below
         if not "https:/" in self.full_url and not "http:/" in self.full_url:
             self.full_url = "https:/" + self.full_url
 
-        if "https:/" in self.full_url: #flask issue
+        if "https:/" in self.full_url and not "https://" in self.full_url: 
             self.full_url = self.full_url.replace("https:/", "https://")
-        if "http:/" in self.full_url:
+        if "http:/" in self.full_url and not "http://" in self.full_url:
             self.full_url = self.full_url.replace("http:/", "http://")
 
         self.cropped_url = self.full_url.replace("https://", "").replace("http://", "")
-
+        
         self.hostname = self.cropped_url.split('/')[0]
         self.domain = '.'.join(self.hostname.split('.')[-2:])
+        
         self.data_path = "data/" + self.cropped_url
         self.data_folder = os.path.dirname(self.data_path)
         self.extension = self.cropped_url.split('.')[-1]
+
         self.is_trusted = self._check_trust(key)
 
     def _check_trust(self, key: str) -> bool:
@@ -54,7 +59,9 @@ class Link:
             "polymc.github.io"
         ]
         
-        return self.domain in trusted_domains or self.hostname in trusted_hostnames or key == VARS.secret_key
+        return self.domain in trusted_domains \
+            or self.hostname in trusted_hostnames \
+            or key == VARS.secret_key
 
     def data_exists(self) -> bool:
         return os.path.exists(self.data_path)
@@ -66,17 +73,37 @@ class Link:
     def download_file(self) -> None:
         self._create_folders()
         r = requests.get(self.full_url)
-        if self.extension == "json": content = Utils.patch_file(r.content)
-        else: content = r.content
 
-        with open(self.data_path, "wb") as open_file:
-            open_file.write(content)
+        if self.extension == "json": 
+            with open(self.data_path, "w") as open_file:
+                open_file.write(Utils.patch_file(r.text, self.cropped_url))
+        
+        else: 
+            with open(self.data_path, "wb") as open_file:
+                open_file.write(r.content)
 
 
+
+    
 class Utils:
     @staticmethod
-    def patch_file(file_content: str):
-        return file_content.replace(b"https://", VARS.endpoint_b)
+    def patch_file(file_content: str, url: str):
+        
+        if "/net.minecraftforge/" in url:
+            Utils._patch_mutate_forge_file_polymc(file_content)
+
+        file_content = file_content.replace("https://", VARS.endpoint_b)
+        return file_content
+    
+    @staticmethod
+    def _patch_mutate_forge_file_polymc(file_content: str):
+        file_dict = json.loads(file_content)
+        
+        for entry in file_dict.get("libraries"):
+            if not entry.get("url"):
+                entry["url"] = "https://maven.minecraftforge.net/"
+
+        file_content = json.dumps(file_dict)
 
 
 @app.route("/get_data/<path:path>")
@@ -86,7 +113,8 @@ def get_data(path: str = ""):
     if not link.is_trusted:
         return "Must be from a trusted domain !", 400
 
-    if not link.data_exists():
+    if True:
+    # if not link.data_exists():
         link.download_file()
 
     return send_file(link.data_path), 200
