@@ -90,19 +90,22 @@ class Utils:
     def patch_file(file_content: str, url: str):
         
         if "/net.minecraftforge/" in url:
-            file_content = Utils._patch_mutate_forge_file_polymc(file_content)
+            file_content = Utils._patch_forge_file_polymc(file_content)
 
         file_content = file_content.replace("https://", VARS.endpoint_b)
         return file_content
     
     @staticmethod
-    def _patch_mutate_forge_file_polymc(file_content: str):
+    def _patch_forge_file_polymc(file_content: str):
         file_dict = json.loads(file_content)
         
         #if no libs key (eg in the index), just return the original)
         if not file_dict.get("libraries"): 
             return file_content
         
+        #some libraries have no "url" value in their dict, just their name
+        #that means the libs will be downloaded from the default url (libs.minecraft.net)
+        #we don't want that, so we're adding the url key here so it's replaced.
         for entry in file_dict.get("libraries"):
             if not entry.get("url"):
                 entry["url"] = "https://libraries.minecraft.net"
