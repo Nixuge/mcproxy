@@ -105,7 +105,7 @@ class Utils:
         
         for entry in file_dict.get("libraries"):
             if not entry.get("url"):
-                entry["url"] = "https://maven.minecraftforge.net/"
+                entry["url"] = "https://libraries.minecraft.net"
 
         return json.dumps(file_dict)
 
