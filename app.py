@@ -99,6 +99,10 @@ class Utils:
     def _patch_mutate_forge_file_polymc(file_content: str):
         file_dict = json.loads(file_content)
         
+        #if no libs key (eg in the index), just return the original)
+        if not file_dict.get("libraries"): 
+            return file_content
+        
         for entry in file_dict.get("libraries"):
             if not entry.get("url"):
                 entry["url"] = "https://maven.minecraftforge.net/"
