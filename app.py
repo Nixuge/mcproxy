@@ -87,7 +87,6 @@ class Link:
 
 
 
-    
 class Utils:
     @staticmethod
     def patch_file(file_content: str, url: str):
@@ -107,14 +106,20 @@ class Utils:
             return file_content
         
         #some libraries have no "url" value in their dict, just their name
-        #that means the libs will be downloaded from the default url (libs.minecraft.net)
-        #we don't want that, so we're adding the url key here so it's replaced.
+        #when this happens, mc should download from libraries.minecraft.net, and will
+        #however, we want it to download from our website instead
+        #hence why we're explicitely adding the key so it gets replaced 
         for entry in file_dict.get("libraries"):
             if not entry.get("url"):
                 entry["url"] = "https://libraries.minecraft.net"
 
         return json.dumps(file_dict)
 
+@app.route("/meta/<path:path>")
+def get_meta(path: str = ""):
+    if not os.path.exists(path): return "404", 404
+
+    return send_file(path), 200
 
 @app.route("/get_data/<path:path>")
 def get_data(path: str = ""):
@@ -131,10 +136,20 @@ def get_data(path: str = ""):
 
 @app.route("/")
 def index():
-    return "Welcome to le super index fifou trop bien. Pr linstant lexe est po la pck g la flemme voila nsm il est sur ma cle usb ca suffit tres bien mtn demerdez vous mais en gros si qqun veut fo recompiler PolyMC et ds le CMakeList.txt changer 'meta.polymc.org' à 'mcdl.nixuge.me/get_data/meta.polymc.org' et apres cbon voila bon chonc"
+    return """Installation instructions:<br>
+-Download either <a href="https://github.com/PolyMC/PolyMC/releases/latest">PolyMC</a> or <a href="https://github.com/PrismLauncher/PrismLauncher/releases/latest">PrismLauncher</a> (if possible use the Portable build)<br>
+-Download the <a href="meta/accounts.json">accounts.json</a> file and place it in the PolyMC/PrismLauncher data folder
+(if portable, place it in the extracted folder with the executable)<br>
+
+-Open the settings, go to the APIs tab, and inside "Metadata Server", place one of the URLs below:<br>
+If using PolyMC, https://mcdl.nixuge.me/get_data/meta.polymc.org/v1/<br>
+If using PrismLauncher, https://mcdl.nixuge.me/get_data/meta.prismlauncher.org/v1/<br>
+<br>
+After these steps, you should be done, just add a new account with your username and you're good to go"""
 
 
 if __name__ == "__main__":
+    if not os.path.exists("meta/"): os.makedirs("meta/")
+    
     http_server = WSGIServer(('', VARS.server_port), app)
     http_server.serve_forever()
-
