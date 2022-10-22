@@ -143,8 +143,7 @@ def index():
 (if portable, place it in the extracted folder with the executable)<br>
 
 -Open the settings, go to the APIs tab, and inside "Metadata Server", place one of the URLs below:<br>
-If using PolyMC, https://mcdl.nixuge.me/get    if not os.path.exists("meta/"): os.makedirs("meta/")
-_data/meta.polymc.org/v1/<br>
+If using PolyMC, https://mcdl.nixuge.me/get_data/meta.polymc.org/v1/<br>
 If using PrismLauncher, https://mcdl.nixuge.me/get_data/meta.prismlauncher.org/v1/<br>
 <br>
 After these steps, you should be done, just add a new account with your username and you're good to go<br>
