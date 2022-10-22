@@ -1,0 +1,20 @@
+{
+    "accounts": [
+        {
+            "entitlement": {
+                "canPlayMinecraft": true,
+                "ownsMinecraft": true
+            },
+            "type": "Offline",
+            "ygg": {
+                "extra": {
+                    "clientToken": "",
+                    "userName": ""
+                },
+                "iat": 0,
+                "token": "offline"
+            }
+        }
+    ],
+    "formatVersion": 3
+}

@@ -117,9 +117,10 @@ class Utils:
 
 @app.route("/meta/<path:path>")
 def get_meta(path: str = ""):
-    if not os.path.exists(path): return "404", 404
+    full_path = "meta/" + path
+    if not os.path.exists(full_path): return "404", 404
 
-    return send_file(path), 200
+    return send_file(full_path), 200
 
 @app.route("/get_data/<path:path>")
 def get_data(path: str = ""):
@@ -138,18 +139,18 @@ def get_data(path: str = ""):
 def index():
     return """Installation instructions:<br>
 -Download either <a href="https://github.com/PolyMC/PolyMC/releases/latest">PolyMC</a> or <a href="https://github.com/PrismLauncher/PrismLauncher/releases/latest">PrismLauncher</a> (if possible use the Portable build)<br>
--Download the <a href="meta/accounts.json">accounts.json</a> file and place it in the PolyMC/PrismLauncher data folder
+-Download the <a href="meta/accounts.json">accounts.json</a> file (rightclick>save) and place it in the PolyMC/PrismLauncher data folder
 (if portable, place it in the extracted folder with the executable)<br>
 
 -Open the settings, go to the APIs tab, and inside "Metadata Server", place one of the URLs below:<br>
-If using PolyMC, https://mcdl.nixuge.me/get_data/meta.polymc.org/v1/<br>
+If using PolyMC, https://mcdl.nixuge.me/get    if not os.path.exists("meta/"): os.makedirs("meta/")
+_data/meta.polymc.org/v1/<br>
 If using PrismLauncher, https://mcdl.nixuge.me/get_data/meta.prismlauncher.org/v1/<br>
 <br>
-After these steps, you should be done, just add a new account with your username and you're good to go"""
+After these steps, you should be done, just add a new account with your username and you're good to go<br>
+Report issues @ one of the contacts <a href="https://nixuge.me">here</a>"""
 
 
-if __name__ == "__main__":
-    if not os.path.exists("meta/"): os.makedirs("meta/")
-    
+if __name__ == "__main__":    
     http_server = WSGIServer(('', VARS.server_port), app)
     http_server.serve_forever()
