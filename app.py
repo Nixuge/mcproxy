@@ -42,12 +42,13 @@ class Link:
 
         self.is_trusted = self._check_trust(key)
 
-    def _check_trust(self, key: str) -> bool:
+    def _check_trust(self, key: Optional[str]) -> bool:
         trusted_domains = [
             "minecraft.net",
             "mojang.com",
             "multimc.org",
             "polymc.org",
+            "prismlauncher.org",
             "maven.org",
             "fabricmc.net",
             "quiltmc.org",
@@ -56,7 +57,9 @@ class Link:
             "liteloader.com"
         ]
         trusted_hostnames = [
-            "polymc.github.io"
+            "polymc.github.io",
+            "prismlauncher.github.io",
+            "multimc.github.io"
         ]
         
         return self.domain in trusted_domains \
