@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 
 from typing import Optional
-from flask import Flask, send_file, request
+from flask import Flask, render_template, send_file, request
 import os
 import requests
 from gevent.pywsgi import WSGIServer
@@ -137,17 +137,7 @@ def get_data(path: str = ""):
 
 @app.route("/")
 def index():
-    return """Installation instructions:<br>
--Download either <a href="https://github.com/PolyMC/PolyMC/releases/latest">PolyMC</a> or <a href="https://github.com/PrismLauncher/PrismLauncher/releases/latest">PrismLauncher</a> (if possible use the Portable build)<br>
--Download the <a href="meta/accounts.json">accounts.json</a> file (rightclick>save) and place it in the PolyMC/PrismLauncher data folder
-(if portable, place it in the extracted folder with the executable)<br>
-
--Open the settings, go to the APIs tab, and inside "Metadata Server", place one of the URLs below:<br>
-If using PolyMC, https://mcdl.nixuge.me/get_data/meta.polymc.org/v1/<br>
-If using PrismLauncher, https://mcdl.nixuge.me/get_data/meta.prismlauncher.org/v1/<br>
-<br>
-After these steps, you should be done, just add a new account with your username and you're good to go<br>
-Report issues @ one of the contacts <a href="https://nixuge.me">here</a>"""
+    return render_template("index.html")
 
 
 if __name__ == "__main__":    
