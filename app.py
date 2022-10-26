@@ -26,10 +26,8 @@ class Link:
         if not "https:/" in self.full_url and not "http:/" in self.full_url:
             self.full_url = "https:/" + self.full_url
 
-        if "https:/" in self.full_url and not "https://" in self.full_url: 
-            self.full_url = self.full_url.replace("https:/", "https://")
-        if "http:/" in self.full_url and not "http://" in self.full_url:
-            self.full_url = self.full_url.replace("http:/", "http://")
+        self._fix_full_url("https:/", "https://")
+        self._fix_full_url("http:/", "http://")
 
         self.cropped_url = self.full_url.replace("https://", "").replace("http://", "")
         
@@ -41,6 +39,11 @@ class Link:
         self.extension = self.cropped_url.split('.')[-1]
 
         self.is_trusted = self._check_trust(key)
+
+    def _fix_full_url(self, original: str, new: str):
+        #made for https:/->https://
+        if original in self.full_url and not new in self.full_url: 
+            self.full_url = self.full_url.replace(original, new)
 
     def _check_trust(self, key: Optional[str]) -> bool:
         trusted_domains = [
