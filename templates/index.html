@@ -7,6 +7,24 @@
 </head>
 
 <body>
+    <h1>MCProxy</h1>
+
+    <h2>What's that for?</h2>
+    <ul>
+        MCProxy is a "proxy" that allows you to download Minecraft versions from networks that have the Mojang servers
+        blocked.<br>
+
+        It's made primarely for the PolyMC and PrismLauncher launchers.<br>
+
+        You can get the source for the server
+        <a href="https://github.com/Nixuge/mcproxy">here</a>,
+        it's fairly simple so feel free to dig into the code
+        and selfhost your own server.<br>
+
+        <b>Note that this doesn't restore the authentification servers</b>,
+        it only allows you to download the versions jars/libs jars.
+    </ul>
+
     <h1>Installation instructions</h1>
     <ul id="installation_steps">
         <li>
@@ -25,15 +43,16 @@
             and place it in the PolyMC/PrismLauncher data folder
             <ul>
                 <li>if portable, place it in the extracted folder with the executable</li>
-                <li>if not portable, the data folder should be in your %localappdata% on windows and on your .local/share on linux</li>
+                <li>if not portable, the data folder should be in your %localappdata% on windows and on your
+                    .local/share on linux</li>
             </ul>
         </li>
         <br>
         <li>
             Open the settings, go to the APIs tab, and inside "Metadata Server", place one of the URLs below:
             <ul>
-                <li>If using PolyMC, https://mcdl.nixuge.me/get_data/meta.polymc.org/v1/</li>
-                <li>If using PrismLauncher, https://mcdl.nixuge.me/get_data/meta.prismlauncher.org/v1/</li>
+                <li>If using PolyMC, <mark>https://mcdl.nixuge.me/get_data/meta.polymc.org/v1/</mark></li>
+                <li>If using PrismLauncher, <mark>https://mcdl.nixuge.me/get_data/meta.prismlauncher.org/v1/</mark></li>
             </ul>
         </li>
         <br>
@@ -46,4 +65,5 @@
     </ul>
     <h2>Report issues @ one of the contacts <a href="https://nixuge.me">here</a></h2>
 </body>
+
 </html>
