@@ -9,11 +9,25 @@ import requests
 from gevent.pywsgi import WSGIServer
 import json
 
-
 app = Flask(__name__)
 
-class VARS:
-    endpoint_b = "https://mcdl.nixuge.me/get_data/"
+
+def load_vars(config_filename: str = "config.json"):
+    try:
+        data = None
+        with open(config_filename) as json_file:
+            data = json.load(json_file)
+
+        VARS.endpoint = data["endpoint"]
+        VARS.secret_key = data["secret_key"]
+        VARS.server_port = data["server_port"]
+
+        return True
+    
+    except: return False
+
+class VARS: #default vars, you still need a json.
+    endpoint = "https://mcdl.nixuge.me/get_data/"
     secret_key = "4k9Mu1AoQHGh0x"
     server_port = 64670
 
@@ -93,11 +107,11 @@ class Link:
 class Utils:
     @staticmethod
     def patch_file(file_content: str, url: str):
-        
+
         if "/net.minecraftforge/" in url:
             file_content = Utils._patch_forge_file_polymc(file_content)
 
-        file_content = file_content.replace("https://", VARS.endpoint_b)
+        file_content = file_content.replace("https://", VARS.endpoint)
         return file_content
     
     @staticmethod
@@ -111,12 +125,13 @@ class Utils:
         #some libraries have no "url" value in their dict, just their name
         #when this happens, mc should download from libraries.minecraft.net, and will
         #however, we want it to download from our website instead
-        #hence why we're explicitely adding the key so it gets replaced 
+        #hence why we're explicitely adding the key so it gets replaced
         for entry in file_dict.get("libraries"):
             if not entry.get("url"):
                 entry["url"] = "https://libraries.minecraft.net"
 
         return json.dumps(file_dict)
+
 
 @app.route("/meta/<path:path>")
 def get_meta(path: str = ""):
@@ -124,6 +139,7 @@ def get_meta(path: str = ""):
     if not os.path.exists(full_path): return "404", 404
 
     return send_file(full_path), 200
+
 
 @app.route("/get_data/<path:path>")
 def get_data(path: str = ""):
@@ -143,6 +159,10 @@ def index():
     return render_template("index.html")
 
 
-if __name__ == "__main__":    
+if __name__ == "__main__":
+    if not load_vars():
+        print("Issue loading the config ! make sure it's there and that everything is set correctly")
+        exit(1)
+
     http_server = WSGIServer(('', VARS.server_port), app)
     http_server.serve_forever()
