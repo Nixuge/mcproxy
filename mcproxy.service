@@ -8,8 +8,8 @@ Restart=always
 RestartSec=5
 Type=simple
 User=nix
-WorkingDirectory=/home/nix/flask/mcproxy
-ExecStart=/home/nix/flask/mcproxy/app.py
+WorkingDirectory=/home/nix/webservers/mcproxy
+ExecStart=/home/nix/webservers/mcproxy/app.py
 TimeoutStopSec=30
 
 [Install]

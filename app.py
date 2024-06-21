@@ -1,4 +1,4 @@
-#!/bin/python3
+#!./venv/bin/python
 
 # -*- coding: utf-8 -*-
 
@@ -160,9 +160,11 @@ def index():
 
 
 if __name__ == "__main__":
+    print("Loading config")
     if not load_vars():
         print("Issue loading the config ! make sure it's there and that everything is set correctly")
         exit(1)
-
+    
+    print("Starting webserver")
     http_server = WSGIServer(('', VARS.server_port), app)
     http_server.serve_forever()
